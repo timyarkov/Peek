@@ -105,7 +105,7 @@ public class DummyPeekSystem implements PeekSystem {
         dummyData.add(new Post("Sample Text Post",
                                 PostDataType.TEXT,
                                 "Mega test text. Veryvery short!"));
-        dummyData.add(new Post("Sample Super Long Text Post",
+        dummyData.add(new Post("Sample Super Long Text Post with a Very Long Title Too...",
                                 PostDataType.TEXT,
                                 dummyLongString));
         dummyData.add(new Post("Sample Image Post",

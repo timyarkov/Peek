@@ -14,7 +14,7 @@ import com.timyarkov.peek.model.items.Post;
 
 public class PostFragment extends Fragment {
     private PostFragmentViewModel vm;
-    private Post currPost;
+    private Post currPost; //!!TODO to vm
     private View rootView;
 
     public PostFragment() {
@@ -45,6 +45,9 @@ public class PostFragment extends Fragment {
         // Display
         ConstraintLayout postBodyContainer = rootView.findViewById(R.id.postBodyContainer);
         postBodyContainer.removeAllViews(); // Clear out previous
+
+        TextView title = rootView.findViewById(R.id.postTitle);
+        title.setText(post.getTitle());
 
         View item;
 
