@@ -3,11 +3,8 @@ package com.timyarkov.peek.model.comms.driver;
 import com.timyarkov.peek.model.comms.util.CommsResponse;
 import com.timyarkov.peek.model.env.Environment;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.*;
+import java.net.*;
 
 public class ImgurCommsDriver implements CommsDriverStrategy {
     private static final String IMGUR_URL = "https://api.imgur.com/3/gallery/search/?q=";
@@ -30,35 +27,26 @@ public class ImgurCommsDriver implements CommsDriverStrategy {
     @Override
     public CommsResponse getData() {
         try {
-            //!!TODO this brokey !
-            /*
-            HttpClient client = HttpClient.newBuilder().build();
-            HttpRequest req = HttpRequest.newBuilder(new URI(IMGUR_URL + query)) //!!TODO sanitize?
-                    .GET()
-                    .setHeader("Authorization", "Client-ID " + Environment.getEnv(IMGUR_API_VAR))
-                    .build();
-
-            HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
-            */
-
-            //!!TODO finish this ::////
+            // Credit: https://www.journaldev.com/7148/java-httpurlconnection-example-java-http-request-get-post
             URL url = new URL(IMGUR_URL + query);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Authorization", "Client-ID " +
                                             Environment.getEnv(IMGUR_API_VAR));
 
-            connection.connect();
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                                                    connection.getInputStream()));
+            String data;
+            StringBuffer res = new StringBuffer();
 
-            connection.getResponseCode();
+            while ((data = in.readLine()) != null) {
+                res.append(data);
+            }
 
-            CommsResponse ret = new CommsResponse(false, connection.getResponseCode(), (String) connection.getContent());
+            in.close();
 
-            return new CommsResponse(false, res.statusCode(), res.body());
-        } catch (IOException | InterruptedException | IllegalStateException e) {
-            return new CommsResponse(true, -1,
-                                     "Exception: " + e.getMessage());
-        } catch (URISyntaxException e) {
+            return new CommsResponse(false, connection.getResponseCode(), res.toString());
+        } catch (IOException e) {
             return new CommsResponse(true, -1,
                                      "Exception: " + e.getMessage());
         }
