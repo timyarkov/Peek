@@ -19,6 +19,15 @@ public class DummyPeekSystem implements PeekSystem {
         return null;
     }
 
+    /**
+     * Gracefully shuts down the system, committing any required data
+     * to files and such.
+     */
+    @Override
+    public void shutdown() {
+        return; // Dummy has no files to write or anything else
+    }
+
     // System Observation
     /**
      * Adds a system observer. Cannot be null.
@@ -40,12 +49,22 @@ public class DummyPeekSystem implements PeekSystem {
 
     // System Functionality
     /**
-     * Gets the amount of posts remaining for the day.
-     * @return Amount of posts remaining for the day.
+     * "Borrows" the remaining posts for the day; that is, gets the
+     * number, then sets number internally to 0.
+     * @return Number of remaining posts for the day.
      */
-    @Override
-    public int getRemainingPosts() {
+    public int borrowPeeks() {
         return 99;
+    }
+
+    /**
+     * "Returns" the remaining posts for the day; that is, adds back
+     * any remaining posts to the internal counter. To be called on
+     * application exit.
+     */
+    public void returnPeeks(int returned) {
+        System.out.printf("%d peeks returned%n", returned);
+        return; // Dummy is generous and will always give out peeks, keep them
     }
 
     /**

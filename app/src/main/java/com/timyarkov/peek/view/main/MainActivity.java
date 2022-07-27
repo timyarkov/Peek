@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         int index = f.getCurrPost() == null ? 0 : postPool.indexOf(f.getCurrPost());
 
         f.displayPost(index == postPool.size() - 1 ? postPool.get(0) : postPool.get(++index));
+
+        this.vm.usePeek();
     }
 
     // Main Methods

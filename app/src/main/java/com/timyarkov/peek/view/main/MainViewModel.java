@@ -34,6 +34,11 @@ public class MainViewModel extends AndroidViewModel implements PeekSystemObserve
             t.setDaemon(true);
             return t;
         });
+
+        // Setup required live data
+        this.currentError = new MutableLiveData<>();
+        this.remainingPosts = new MutableLiveData<>(this.model.borrowPeeks()); // Borrow peeks!
+        this.posts = new MutableLiveData<>();
     }
 
     // Backend System
@@ -42,12 +47,16 @@ public class MainViewModel extends AndroidViewModel implements PeekSystemObserve
      */
     @Override
     public void update() {
-        if (model == null) {
-            return; // Tell me the story of how you ended up here...
-        }
-
         this.currentError.setValue(this.model.getCurrentError());
-        this.remainingPosts.setValue(this.model.getRemainingPosts());
+    }
+
+    /**
+     * On VM clear, we also return peeks.
+     */
+    @Override
+    public void onCleared() {
+        super.onCleared();
+        this.model.returnPeeks(this.remainingPosts.getValue());
     }
 
     // Error State
@@ -56,11 +65,6 @@ public class MainViewModel extends AndroidViewModel implements PeekSystemObserve
      * @param error Error to set.
      */
     private void setCurrentError(String error) {
-        // Create if not existing yet
-        if (currentError == null) {
-            this.currentError = new MutableLiveData<>();
-        }
-
         this.currentError.setValue(error);
     }
 
@@ -79,26 +83,18 @@ public class MainViewModel extends AndroidViewModel implements PeekSystemObserve
 
     // Functionality
     /**
-     * Gets the remaining posts live data (setting value if first call).
+     * Gets the remaining posts live data (as was borrowed from the system).
      * @return Remaining posts.
      */
     public LiveData<Integer> getRemainingPosts() {
-        // Create if not existing yet
-        if (this.remainingPosts == null) {
-            // Populate with initial data (whether available or not)
-            this.remainingPosts = new MutableLiveData<>(this.model != null ?
-                                                        this.model.getRemainingPosts() : -1);
-        }
-
-        // If model not present, error
-        if (this.model == null) {
-            this.setCurrentError("MainViewModel has no PeekSystem injected.");
-        } else {
-            // Update on call
-            this.remainingPosts.setValue(this.model.getRemainingPosts());
-        }
-
         return this.remainingPosts;
+    }
+
+    /**
+     * Decrement the remaining post count by one.
+     */
+    public void usePeek() {
+        this.remainingPosts.setValue(this.remainingPosts.getValue() - 1);
     }
 
     /**
@@ -108,11 +104,6 @@ public class MainViewModel extends AndroidViewModel implements PeekSystemObserve
      * @return Post live data.
      */
     public LiveData<List<Post>> getPostsLiveData() {
-        // Create if not existing yet
-        if (this.posts == null) {
-            this.posts = new MutableLiveData<>();
-        }
-
         return this.posts;
     }
 

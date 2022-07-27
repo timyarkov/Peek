@@ -8,12 +8,18 @@ import java.util.List;
  * Facade to interact with the backend system.
  */
 public interface PeekSystem {
-    // System State
+    // System State and Control
     /**
      * Gets the system's error state. Null if no current error.
      * @return Current system error state.
      */
     public String getCurrentError();
+
+    /**
+     * Gracefully shuts down the system, committing any required data
+     * to files and such.
+     */
+    public void shutdown();
 
     // System Observation
     /**
@@ -32,10 +38,18 @@ public interface PeekSystem {
 
     // System Functionality
     /**
-     * Gets the amount of posts remaining for the day.
-     * @return Amount of posts remaining for the day.
+     * "Borrows" the remaining posts for the day; that is, gets the
+     * number, then sets number internally to 0.
+     * @return Number of remaining posts for the day.
      */
-    public int getRemainingPosts();
+    public int borrowPeeks();
+
+    /**
+     * "Returns" the remaining posts for the day; that is, adds back
+     * any remaining posts to the internal counter. To be called on
+     * application exit.
+     */
+    public void returnPeeks(int returned);
 
     /**
      * Gets a random assortment of however many posts are available for the day
