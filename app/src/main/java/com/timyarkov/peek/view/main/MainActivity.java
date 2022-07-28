@@ -7,9 +7,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import com.timyarkov.peek.R;
 import com.timyarkov.peek.model.items.Post;
+import com.timyarkov.peek.view.error.ErrorDialogFragment;
+import com.timyarkov.peek.view.error.ErrorFragment;
 import com.timyarkov.peek.view.post.PostFragment;
 
 import java.util.List;
@@ -23,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private MainViewModel vm;
 
     // Functionalities
-    public void changePost() {
+    private void changePost() {
         List<Post> postPool = this.vm.getPostsLiveData().getValue();
 
         // Find index of current item, then rotate to next (wrap if done)
@@ -33,6 +37,22 @@ public class MainActivity extends AppCompatActivity {
         f.displayPost(index == postPool.size() - 1 ? postPool.get(0) : postPool.get(++index));
 
         this.vm.usePeek();
+    }
+
+    private void errorPopup() {
+        /*
+        // Use popup container to display error
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setReorderingAllowed(true);
+
+        ft.replace(R.id.popup, ErrorFragment.class, null);
+        ft.commitNow();
+
+        // Display error
+        ErrorFragment f = (ErrorFragment) getSupportFragmentManager().findFragmentById(R.id.popup);
+        f.setErrorMessage(this.vm.getCurrentError().getValue());
+
+         */
     }
 
     // Main Methods
@@ -46,6 +66,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Attach ViewModel
         this.vm = new ViewModelProvider(this).get(MainViewModel.class);
+
+        // Error Popup
+        this.vm.getCurrentError().observe(this, newError -> {
+            //!!TODO multiple stacked errors not supported...
+            if (newError != null) {
+                ErrorDialogFragment dialog = new ErrorDialogFragment();
+                Bundle args = new Bundle();
+                args.putString("error", newError);
+                dialog.setArguments(args);
+                dialog.show(getSupportFragmentManager(), "errorDialog");
+            }
+        });
 
         // Remaining posts message
         this.vm.getRemainingPosts().observe(this, remaining -> {

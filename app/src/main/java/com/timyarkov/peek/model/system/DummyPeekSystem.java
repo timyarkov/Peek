@@ -10,13 +10,27 @@ import java.util.List;
  * Dummy facade with stripped down functionality to facilitate test data.
  */
 public class DummyPeekSystem implements PeekSystem {
+    private String error;
+    private List<PeekSystemObserver> observers;
+
+    public DummyPeekSystem() {
+        this.error = null;
+        this.observers = new ArrayList<>();
+    }
+
     // System State
     /**
      * Gets the system's error state. Null if no current error.
      * @return Current system error state.
      */
     public String getCurrentError() {
-        return null;
+        return error;
+    }
+
+    private void screamError(String error) {
+        this.error = error;
+        this.broadcast();
+        this.error = null;
     }
 
     /**
@@ -29,13 +43,19 @@ public class DummyPeekSystem implements PeekSystem {
     }
 
     // System Observation
+    private void broadcast() {
+        for (PeekSystemObserver o : this.observers) {
+            o.update();
+        }
+    }
+
     /**
      * Adds a system observer. Cannot be null.
      * @param o Observer to add.
      * @return Whether successful or not.
      */
     public boolean addObserver(PeekSystemObserver o) {
-        return true;
+        return this.observers.add(o);
     }
 
     /**
@@ -44,7 +64,7 @@ public class DummyPeekSystem implements PeekSystem {
      * @return Whether successful or not (i.e. whether an actual observer or not).
      */
     public boolean removeObserver(PeekSystemObserver o) {
-        return true;
+        return this.observers.remove(o);
     }
 
     // System Functionality
@@ -54,6 +74,9 @@ public class DummyPeekSystem implements PeekSystem {
      * @return Number of remaining posts for the day.
      */
     public int borrowPeeks() {
+        // For debug, scream an error when lending peeks
+        this.screamError("There's no error here. Enjoy your peeks! They are very fresh.");
+
         return 99;
     }
 
@@ -64,7 +87,7 @@ public class DummyPeekSystem implements PeekSystem {
      */
     public void returnPeeks(int returned) {
         System.out.printf("%d peeks returned%n", returned);
-        return; // Dummy is generous and will always give out peeks, keep them
+        // Dummy is generous and will always give out peeks, keep them :)
     }
 
     /**

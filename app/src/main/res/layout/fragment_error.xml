@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:context=".view.error.ErrorFragment">
+    <androidx.cardview.widget.CardView
+            android:layout_width="371dp"
+            android:layout_height="552dp" app:cardBackgroundColor="#FF7575" app:cardCornerRadius="30dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <TextView
+                    android:text="Oh no!"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/errorTitle"
+                    app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="32dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display2"/>
+            <TextView
+                    android:text="Something went wrong! Here is the error message:"
+                    android:layout_width="370dp"
+                    android:layout_height="54dp" android:id="@+id/errorPreamble"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintTop_toBottomOf="@+id/errorTitle" android:layout_marginTop="8dp"
+                    android:gravity="center_horizontal|center_vertical"/>
+            <Button
+                    android:text="Ok"
+                    android:layout_width="104dp"
+                    android:layout_height="53dp" android:id="@+id/errorOkButton"
+                    app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginBottom="32dp"
+                    app:cornerRadius="30dp" android:theme="@style/PeekError"/>
+            <TextView
+                    android:text="Something here went like megamega wrong if you feel the need to tell the poor user about it..."
+                    android:layout_width="324dp"
+                    android:layout_height="297dp" android:id="@+id/errorBody"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_bias="0.494"
+                    app:layout_constraintBottom_toTopOf="@+id/errorOkButton"
+                    app:layout_constraintTop_toBottomOf="@+id/errorPreamble"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>

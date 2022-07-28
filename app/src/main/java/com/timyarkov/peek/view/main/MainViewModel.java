@@ -28,6 +28,7 @@ public class MainViewModel extends AndroidViewModel implements PeekSystemObserve
         super(application);
         // Set up backend model and thread pool
         this.model = new DummyPeekSystem(); //!!TODO switch out to realsies
+        this.model.addObserver(this); //!!TODO probably need to enforce a singleton at some point for this
 
         this.pool = Executors.newFixedThreadPool(2, runnable -> {
             Thread t = new Thread(runnable);
